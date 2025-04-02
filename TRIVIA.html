@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia de Cultura General</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            text-align: center; 
+            background-color: #ffecb3; 
+            color: #5c3d00;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: auto; 
+            background: #fff3e0;
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+            border: 5px solid #ff9800;
+        }
+        .question { 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .options button { 
+            display: block; 
+            width: 100%; 
+            margin: 10px 0; 
+            padding: 12px; 
+            font-size: 18px; 
+            border: 3px solid #ff9800;
+            border-radius: 10px;
+            background: #ffcc80;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .options button:hover { 
+            background: #ffb74d;
+        }
+        .correct { 
+            background-color: #66bb6a !important; 
+            color: white; 
+            border-color: #2e7d32;
+        }
+        .incorrect { 
+            background-color: #ef5350 !important; 
+            color: white; 
+            border-color: #b71c1c;
+        }
+        #next { 
+            margin-top: 20px; 
+            display: none; 
+            padding: 10px 20px; 
+            font-size: 20px; 
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #next:hover {
+            background: #e65100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="animate__animated animate__bounce">🎉 Trivia de Cultura General 🎉</h1>
+        <div id="quiz-container">
+            <p id="question" class="question"></p>
+            <div id="options" class="options"></div>
+            <button id="next" onclick="nextQuestion()">Siguiente ➡️</button>
+        </div>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "¿Cuál es el país más grande del mundo?", options: ["China", "Estados Unidos", "Rusia", "Brasil"], answer: 2 },
+            { question: "¿Quién pintó la Mona Lisa?", options: ["Van Gogh", "Leonardo da Vinci", "Picasso", "Miguel Ángel"], answer: 1 },
+            { question: "¿Cuál es el océano más grande?", options: ["Atlántico", "Índico", "Ártico", "Pacífico"], answer: 3 },
+            { question: "¿En qué año llegó el hombre a la Luna?", options: ["1969", "1955", "1975", "1980"], answer: 0 },
+            { question: "¿Cuántos continentes hay?", options: ["5", "6", "7", "8"], answer: 2 },
+            { question: "¿Cuál es el metal más abundante en la corteza terrestre?", options: ["Hierro", "Aluminio", "Cobre", "Oro"], answer: 1 },
+            { question: "¿Quién escribió Don Quijote de la Mancha?", options: ["Cervantes", "Shakespeare", "Borges", "Neruda"], answer: 0 },
+            { question: "¿Cuál es el río más largo del mundo?", options: ["Nilo", "Amazonas", "Yangtsé", "Misisipi"], answer: 1 },
+            { question: "¿En qué país se encuentra la Torre Eiffel?", options: ["Italia", "Francia", "España", "Alemania"], answer: 1 },
+            { question: "¿Cuál es el planeta más grande del sistema solar?", options: ["Tierra", "Marte", "Júpiter", "Saturno"], answer: 2 }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        
+        function loadQuestion() {
+            document.getElementById("next").style.display = "none";
+            let q = questions[currentQuestion];
+            document.getElementById("question").textContent = q.question;
+            let optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+            q.options.forEach((option, index) => {
+                let button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index, button);
+                optionsDiv.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(selected, button) {
+            let correct = questions[currentQuestion].answer;
+            document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
+            if (selected === correct) {
+                button.classList.add("correct");
+                score++;
+            } else {
+                button.classList.add("incorrect");
+                document.querySelectorAll(".options button")[correct].classList.add("correct");
+            }
+            document.getElementById("next").style.display = "block";
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+        
+        function showResults() {
+            document.getElementById("quiz-container").innerHTML = `<h2>Tu puntuación: ${score} / ${questions.length}</h2>`;
+            let feedback = "";
+            if (score === questions.length) feedback = "¡Excelente, lo sabes todo! 🎯";
+            else if (score >= 7) feedback = "¡Muy bien! Tienes un gran conocimiento. 🎓";
+            else if (score >= 4) feedback = "Nada mal, pero puedes mejorar. 😉";
+            else feedback = "Necesitas repasar más. ¡Sigue aprendiendo! 📚";
+            document.getElementById("result").textContent = feedback;
+        }
+        
+        loadQuestion();
+    </script>
+</body>
+</html>
